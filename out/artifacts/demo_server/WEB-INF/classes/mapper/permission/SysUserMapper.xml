@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.gwhere.permission.mapper.SysUserMapper">
+  	<select id="getGrantAbleUsers" resultType="org.gwhere.permission.model.SysUser">
+		select *
+		  from sys_user u
+		 where u.status = 1
+		   and exists (select 1
+				  from sys_user_role ur, sys_role r
+				 where ur.user_id = u.id
+				   and ur.role_id = r.id
+				   and ur.status = 1
+				   and r.status = 1
+				   and r.role_code = 'MALL_MANAGER')
+	</select>
+
+	<select id="getGrantedUsers" resultType="org.gwhere.permission.model.SysUser" parameterType="long">
+		select *
+		  from sys_user u
+		 where u.status = 1
+		   and exists (select 1
+		          from ip_mall_user mu
+		         where mu.status = 1
+		           and mu.user_id = u.id
+		           and mu.mall_id = #{mallId})
+	</select>
+</mapper>

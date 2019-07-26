@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.gwhere.permission.mapper.SysResourceMapper">
+    <resultMap id="SysResourceMap" type="org.gwhere.permission.model.SysResource">
+        <id column="ID" property="id"></id>
+        <result column="RESOURCE_TYPE" property="resourceType"></result>
+        <result column="PARENT_ID" property="parentId"></result>
+        <result column="NAME" property="name"></result>
+        <result column="ROUTER_PATH" property="routerPath"></result>
+        <result column="PATH" property="path"></result>
+        <result column="THE_ORDER" property="theOrder"></result>
+        <result column="DESCRIPTION" property="description"></result>
+        <result column="NEED_LOGIN" property="needLogin"></result>
+        <result column="NEED_PERMISSION" property="needPermission"></result>
+        <result column="STATUS" property="status"></result>
+        <collection property="interfaces" ofType="org.gwhere.permission.model.SysInterface">
+            <id column="I_ID" property="id"></id>
+            <result column="I_NAME" property="name"></result>
+            <result column="I_PATH" property="path"></result>
+            <result column="I_STATUS" property="status"></result>
+        </collection>
+    </resultMap>
+    <select id="getResourcePathsByUserId" resultType="string" parameterType="long">
+		select res.path
+		  from sys_user u,
+		       sys_user_role ur,
+		       sys_role r,
+		       sys_role_resource rr,
+		       sys_resource res
+		 where u.id = ur.user_id
+		   and ur.role_id = r.id
+		   and r.id = rr.role_id
+		   and rr.resource_id = res.id
+		   and u.status = 1
+		   and ur.status = 1
+		   and r.status = 1
+		   and rr.status = 1
+		   and res.status = 1
+		   and u.id = #{userId}
+	</select>
+
+    <select id="getMenuResources" resultType="org.gwhere.permission.model.SysResource" parameterType="long">
+		select distinct res.*
+		  from sys_user          u,
+		       sys_user_role     ur,
+		  	   sys_role          r,
+		       sys_role_resource rr,
+		       sys_resource      res
+		 where u.id = ur.user_id
+		   and ur.role_id = r.id
+		   and r.id = rr.role_id
+		   and rr.resource_id = res.id
+		   and u.status = 1
+		   and ur.status = 1
+		   and r.status = 1
+		   and rr.status = 1
+		   and res.status = 1
+		   and u.id = #{userId}
+		   and res.resource_type = 1
+		 order by res.parent_id, res.the_order
+	</select>
+
+    <select id="getAllBackResources" resultMap="SysResourceMap">
+		select res.*,
+		       si.id as i_id,
+		       si.name as i_name,
+		       si.path as i_path,
+		       si.status as i_status
+		  from sys_resource res
+		  left join sys_resource_interface sri
+		    on res.id = sri.resource_id
+		   and sri.status = 1
+		  left join sys_interface si
+		    on sri.interface_id = si.id
+		   and si.status = 1
+		 where res.status = 1
+		   and res.resource_type != 3
+		 order by res.id
+	</select>
+
+    <select id="getResourcesByRoleId" resultType="org.gwhere.permission.model.SysResource" parameterType="long">
+		select r.*
+		  from sys_role_resource rr, sys_resource r
+		 where rr.resource_id = r.id
+		   and rr.status = 1
+		   and r.status = 1
+		   and rr.role_id = #{roleId}
+	</select>
+
+	<select id="getResourcePathsByUserBrand" resultType="string">
+		select res.path
+		from tbl_user_brand ub,
+		sys_role r,
+		sys_role_resource rr,
+		sys_resource res
+		where concat(',',ub.brand_roles,',') like concat('%,',r.id,',%')
+		and r.id = rr.role_id
+		and rr.resource_id = res.id
+		and ub.status = 1
+		and r.status = 1
+		and rr.status = 1
+		and res.status = 1
+		and ub.user_id = #{userId}
+		and ub.brand_id = #{brandId}
+	</select>
+
+	<select id="getMenuResourcesByUserBrand" resultType="org.gwhere.permission.model.SysResource">
+		select distinct res.*
+		from tbl_user_brand ub,
+		sys_role          r,
+		sys_role_resource rr,
+		sys_resource      res
+		where concat(',',ub.brand_roles,',') like concat('%,',r.id,',%')
+		and r.id = rr.role_id
+		and rr.resource_id = res.id
+		and ub.status = 1
+		and r.status = 1
+		and rr.status = 1
+		and res.status = 1
+		and res.resource_type = 1
+		and ub.user_id = #{userId}
+		and ub.brand_id = #{brandId}
+		order by res.parent_id, res.the_order
+	</select>
+</mapper>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <!--需要导入的包-->
+    <classPathEntry location="C:\Users\lenovo\Desktop\demo\demo_server\framework\webapp\WEB-INF\lib\mysql-connector-java-5.1.25-bin.jar" />
+    <!--连接的表-->
+    <context id="DB2Tables">
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/test2018?useUnicode=true"
+                        userId="root"
+                        password="123456">
+        </jdbcConnection>
+
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="true" />
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="org.gwhere.permission.model" targetProject="C:\Users\lenovo\Desktop\demo\demo_server\src\java">
+            <property name="enableSubPackages" value="false" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="mapper.permission"  targetProject="C:\Users\lenovo\Desktop\demo\demo_server\src\resources">
+            <property name="enableSubPackages" value="false" />
+        </sqlMapGenerator>
+
+        <javaClientGenerator type="XMLMAPPER" targetPackage="org.gwhere.permission.mapper"  targetProject="C:\Users\lenovo\Desktop\demo\demo_server\src\java">
+            <property name="enableSubPackages" value="false" />
+        </javaClientGenerator>
+
+        <table tableName="sys_category" domainObjectName="SysCategory" enableCountByExample="false"
+
+               enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+
+               selectByExampleQueryId="false">
+        </table>
+       
+        <table tableName="sys_category_item" domainObjectName="SysCategoryItem" enableCountByExample="false"
+
+               enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+
+               selectByExampleQueryId="false">
+        </table>
+        <table tableName="sys_class" domainObjectName="SysClass" enableCountByExample="false"
+
+               enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+
+               selectByExampleQueryId="false">
+
+        </table>
+
+        <table tableName="sys_cource" domainObjectName="SysCource" enableCountByExample="false"
+
+               enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+
+               selectByExampleQueryId="false">
+
+        </table>
+
+        <table tableName="sys_courseware" domainObjectName="SysCourseware" enableCountByExample="false"
+
+               enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+
+               selectByExampleQueryId="false">
+
+        </table>
+
+        <table tableName="sys_enroll" domainObjectName="SysEnroll" enableCountByExample="false"
+
+               enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+
+               selectByExampleQueryId="false">
+
+        </table>
+
+        <table tableName="sys_student" domainObjectName="SysStudent" enableCountByExample="false"
+
+               enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+
+               selectByExampleQueryId="false">
+
+        </table>
+
+        <table tableName="sys_teacher" domainObjectName="SysTeacher" enableCountByExample="false"
+
+               enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+
+               selectByExampleQueryId="false">
+
+        </table>
+
+    </context>
+</generatorConfiguration>

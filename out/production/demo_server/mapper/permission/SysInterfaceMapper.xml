@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.gwhere.permission.mapper.SysInterfaceMapper" >
+  	<resultMap id="SysInterfaceMap" type="org.gwhere.permission.model.SysInterface" >
+		<id column="ID" property="id"></id>
+		<result column="NAME" property="name"></result>
+		<result column="PATH" property="path"></result>
+		<result column="STATUS" property="status"></result>
+		<result column="CREATE_TIME" property="createTime"></result>
+		<result column="CREATE_USER" property="createUser"></result>
+		<result column="LAST_UPDATE_TIME" property="lastUpdateTime"></result>
+		<result column="LAST_UPDATE_USER" property="lastUpdateUser"></result>
+		<collection property="resources" ofType="org.gwhere.permission.model.SysResource">
+			<id column="R_ID" property="id"></id>
+			<result column="R_RESOURCE_TYPE" property="resourceType"></result>
+			<result column="R_PARENT_ID" property="parentId"></result>
+			<result column="R_NAME" property="name"></result>
+			<result column="R_ROUTER_PATH" property="routerPath"></result>
+			<result column="R_PATH" property="path"></result>
+			<result column="R_ICON" property="icon"></result>
+			<result column="R_THE_ORDER" property="theOrder"></result>
+			<result column="R_DESCRIPTION" property="description"></result>
+			<result column="R_NEED_LOGIN" property="needLogin"></result>
+			<result column="R_NEED_PERMISSION" property="needPermission"></result>
+			<result column="R_STATUS" property="status"></result>
+			<result column="R_CREATE_TIME" property="createTime"></result>
+			<result column="R_CREATE_USER" property="createUser"></result>
+			<result column="R_LAST_UPDATE_TIME" property="lastUpdateTime"></result>
+			<result column="R_LAST_UPDATE_USER" property="lastUpdateUser"></result>
+		</collection>
+  	</resultMap>
+  	<select id="getEnableInterfaces" resultMap="SysInterfaceMap">
+		select i.*,
+			   r.id               as r_id,
+			   r.resource_type    as r_resource_type,
+			   r.parent_id        as r_parent_id,
+			   r.name             as r_name,
+			   r.router_path      as r_router_path,
+			   r.path             as r_path,
+			   r.icon             as r_icon,
+			   r.the_order        as r_the_order,
+			   r.description	  as r_description,
+			   r.need_login       as r_need_login,
+			   r.need_permission  as r_need_permission,
+			   r.status           as r_status,
+			   r.create_time      as r_create_time,
+			   r.create_user      as r_create_user,
+			   r.last_update_time as r_last_update_time,
+			   r.last_update_user as r_last_update_user
+		  from sys_interface i, sys_resource_interface ri, sys_resource r
+		 where i.id = ri.interface_id
+		   and ri.resource_id = r.id
+		   and i.status = 1
+		   and ri.status = 1
+		   and r.status = 1
+		 order by i.id
+	</select>
+
+	<select id="getInterfacePathsByUserId" resultType="string" parameterType="long">
+		select i.path
+		  from sys_user u,
+		  	   sys_user_role ur,
+		  	   sys_role r,
+		       sys_role_resource rr,
+		       sys_resource res,
+		       sys_resource_interface ri,
+		       sys_interface i
+		 where u.id = ur.user_id
+		   and ur.role_id = r.id
+		   and r.id = rr.role_id
+		   and rr.resource_id = res.id
+		   and res.id = ri.resource_id
+		   and ri.interface_id = i.id
+		   and u.status = 1
+		   and ur.status = 1
+		   and r.status = 1
+		   and rr.status = 1
+		   and res.status = 1
+		   and ri.status = 1
+		   and i.status = 1
+		   and u.id = #{userId}
+	</select>
+
+	<select id="getInterfacePathsByUserBrand" resultType="string">
+		select i.path
+		from tbl_user_brand ub,
+		sys_role r,
+		sys_role_resource rr,
+		sys_resource res,
+		sys_resource_interface ri,
+		sys_interface i
+		where concat(',',ub.brand_roles,',') like concat('%,',r.id,',%')
+		and r.id = rr.role_id
+		and rr.resource_id = res.id
+		and res.id = ri.resource_id
+		and ri.interface_id = i.id
+		and ub.status = 1
+		and r.status = 1
+		and rr.status = 1
+		and res.status = 1
+		and ri.status = 1
+		and i.status = 1
+		and ub.user_id = #{userId}
+		and ub.brand_id = #{brandId}
+	</select>
+</mapper>
